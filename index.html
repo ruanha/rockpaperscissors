@@ -5,8 +5,22 @@
     <title></title>
 </head>
 <body>
+
     <h1> Rock | Paper | Scissors |</h1>
-        <p> play the game in the console. Open console and type: game() </p>
+    <p>Play until one player reaches five!</p>
+
+    <div id="butt">
+        <button id="rock">Rock</button>
+        <button id="paper">Paper</button>
+        <button id="scissors">Scissors</button>
+    </div>
+    <br>
+    <div><span>latest score: </span><span id="result"></span></div>
+    <br>
+    <div><span>player score: </span><span id="playerScore"></span></div>
+    <br>
+    <div><span>computer score: </span><span id="computerScore"></span></div>
+
     <script type="text/javascript">
         function computerPlay(){
             rps = ["rock", "paper", "scissors"];
@@ -21,7 +35,7 @@
             let cp = computerSelection.toLowerCase();
 
             win = (pl, cp) => console.log("You win this round, " + pl + " beats " + cp);
-            loose = (pl, cp) => console.log("You loose this round, " + cp + " beats " + pl); 
+            loose = (pl, cp) => console.log("You loose this round, " + cp + " beats " + pl);
 
             if (pl == cp){
                 console.log("Its a draw: " + pl + " vs. " + cp);
@@ -58,14 +72,14 @@
             let usrInput;
             let i;
 
-            for (i = 0; i < 5; ++i){
-                cp = computerPlay();
-                usrInput = prompt("choose rock, paper or scissors!");
 
-                result = round(usrInput, cp);
+            cp = computerPlay();
+            usrInput = prompt("choose rock, paper or scissors!");
 
-                total += result;
-            }
+            result = round(usrInput, cp);
+
+            total += result;
+
             if (total > 0){
                 console.log("YOU WIN!");
             } else if (total == 0){
@@ -74,6 +88,57 @@
                 console.log("YOU LOOSE!");
             }
         }
+
+        function printResult(result) {
+            let resultText = "";
+            if (result == 0) resultText = "It's a draw!";
+            else if (result < 0) resultText = "You loose";
+            else resultText = "You win!";
+
+            resultDiv.textContent = resultText;
+        }
+
+        playerScore = 0;
+        computerScore = 0;
+        roundNumber = 0;
+        function runningScore(result){
+            roundNumber+=1;
+            if (result > 0) {
+                playerScore+=1;
+                playerSpan.textContent = playerScore;
+            } else if ( result < 0) {
+                computerScore+=1;
+                computerSpan.textContent = computerScore;
+            }
+            if (computerScore == 5 || playerScore == 5) {
+                if (playerScore == 5) {
+                    message = "You Win The Game!";
+                } else message = "You Loose The Game..."
+
+                resultDiv.append(". " + message + " Click a button to start a new game!");
+                computerScore = 0;
+                playerScore = 0;
+                roundNumber = 0;
+            }
+        }
+
+        const buttons = document.querySelectorAll('button');
+        const resultDiv = document.querySelector('#result');
+        const playerSpan = document.querySelector('#playerScore')
+        const computerSpan = document.querySelector('#computerScore')
+
+        buttons.forEach((button)=> {
+            button.addEventListener('click', (e) => {
+                result = round(e.target['id'], computerPlay());
+                if (roundNumber == 0) {
+                    playerSpan.textContent = "";
+                    computerSpan.textContent = "";
+                }
+                printResult(result);
+                runningScore(result);
+            });
+        });
+
     </script>
 
 </body>
